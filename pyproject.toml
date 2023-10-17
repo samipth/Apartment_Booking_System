@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "apartment-booking-system"
+version = "0.1.0"
+description = "System for booking apartments"
+authors = ["RGnik"]
+license = "Open Source"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "^2.0.21"
+psycopg2 = "^2.9.8"
+ariadne = "^0.20.1"
+fastapi = "^0.103.2"
+python-jose = "^3.3.0"
+uvicorn = "^0.23.2"
+sqlalchemy-utils = "^0.41.1"
+social-auth-core = "^4.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
