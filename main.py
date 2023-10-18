@@ -5,7 +5,7 @@ from models.Apartment_model import Apartment
 from models.Booking_model import Booking
 from ariadne import ObjectType, QueryType, ScalarType, make_executable_schema
 from ariadne.asgi import GraphQL
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, not_
 from graphql.type import GraphQLResolveInfo
 from ariadne.asgi.handlers import GraphQLHTTPHandler
 from ariadne.exceptions import HttpBadRequestError
@@ -73,8 +73,26 @@ def resolve_booking(*_, id):
 
 @query.field("sharable_apartments")
 def resolve_apartment(*_):
-    apartment = session.query(Apartment).filter(Apartment.apartment_type == 'Sharable')
+    apartment = session.query(Apartment).filter(and_(Apartment.apartment_type == 'Sharable' ), Apartment.apartment_size != 1)
     return apartment
+
+@query.field("notuser_apartments")
+def resolve_apartment(*_, user_id):
+    booked_apartment_ids = [booking.apartment_id for booking in session.query(Booking).filter(Booking.user_id == user_id)]
+
+    # Query apartments that are not booked by the user
+    apartments = session.query(Apartment).filter(or_(not_(Apartment.apartment_id.in_(booked_apartment_ids))), Apartment.user_id != user_id).all()
+
+    return apartments
+
+@query.field("bookeduser_apartments")
+def resolve_apartment(*_, user_id):
+    booked_apartment_ids = [booking.apartment_id for booking in session.query(Booking).filter(Booking.user_id == user_id)]
+
+    # Query apartments that are not booked by the user
+    apartments = session.query(Apartment).filter(Apartment.apartment_id.in_(booked_apartment_ids)).all()
+
+    return apartments
 
 
 @mutate.field("register")
@@ -109,26 +127,26 @@ def resolve_userprofile(*_, user_email):
     return required_user
 
 @mutate.field("addBuilding")
-def resolve_addBuilding(*_, building):
-    new_building = Building(building['user_id'], building["num_rooms"], building["building_location"])
+def resolve_addBuilding(*_, building_number):
+    new_building = Building(building_number)
     session.add(new_building)
     session.commit()
     return new_building
 
 @mutate.field("addApartment")
 def resolve_addApartment(*_, apartment):
-    new_apartment = Apartment(apartment['building_id'], apartment["apartment_number"], apartment["apartment_size"], 
-                              apartment['apartment_features'], apartment['apartment_isBooked'] , apartment['apartment_type'])
+    new_apartment = Apartment(apartment['building_number'], apartment['user_id'], apartment["apartment_number"], apartment["apartment_size"], 
+                              apartment['apartment_features'], apartment['apartment_type'])
     session.add(new_apartment)
     session.commit()    
     return new_apartment
 
-@mutate.field("deleteBuilding")
-def resolve_deleteBuilding(*_, id):
-    deleted_building = session.query(Building).filter(Building.building_id == id).first()
-    session.delete(deleted_building)
+@mutate.field("deleteApartment")
+def resolve_deleteBuilding(*_, apartment_number):
+    deleted_apartment = session.query(Apartment).filter(Apartment.apartment_number == apartment_number).first()
+    session.delete(deleted_apartment)
     session.commit()
-    return deleted_building
+    return deleted_apartment
 
 @query.field("available_apartments")
 def resolve_available_apartments(*_):
@@ -153,16 +171,6 @@ def resolve_updateBooking(*_, id, booking):
     data = session.query(Booking).filter(Booking.booking_id == id).update({Booking.booking_end_date: booking["booking_end_date"]})
     session.commit()
     return session.query(Booking).filter(Booking.booking_id == id).first()
-
-@mutate.field("updateBuilding")
-def resolve_updateBuilding(*_, id, building):
-    data = session.query(Building).filter(Building.building_id == id)
-    if "provider_id" in building:
-        data.update({Building.user_id: building["user_id"]})
-    if "num_rooms" in building:
-        data.update({Building.num_rooms: building["num_rooms"]})
-    session.commit()
-    return data.first()
 
 # Authentication
 def protect_route(resolver, obj, info: GraphQLResolveInfo, **args):

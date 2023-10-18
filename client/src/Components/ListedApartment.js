@@ -47,7 +47,7 @@ function ListedApartment() {
         <h3 className='center-align'>Listed Apartments</h3>
         <div className='container row' style={{paddingTop: "20px"}}> 
           {
-            data?.user_profile?.buildings.map(building =>{
+            data?.user_profile?.apartments.map(apartment =>{
               return (
                       <section className='fcards col l4'>
                       <div className="row">
@@ -57,7 +57,7 @@ function ListedApartment() {
                               <img className="activator" src="https://media.istockphoto.com/id/1365649825/photo/stylish-micro-apartment-for-one.jpg?s=2048x2048&w=is&k=20&c=SEjWOYBNNQ3Y4w_wn6Go4wPwhZkwoH8etv4g02dWFl4="/>
                             </div>
                             <div className="card-content">
-                              <span className="card-title activator grey-text text-darken-4">{building?.building_id}<i class="material-icons right">Description</i></span>
+                              <span className="card-title activator grey-text text-darken-4">{apartment?.apartment_number}<i class="material-icons right">Description</i></span>
                               <Link to = "/login"><p>Book Now!!</p></Link>
                             </div>
                             <div className="card-reveal">

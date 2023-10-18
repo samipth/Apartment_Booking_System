@@ -1,25 +1,36 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {React, useEffect} from 'react'
 import { LOGIN_USER } from '../Graphql/Mutations';
-import { GET_PROFILE, LOAD_AVAILABLE_APARTMENTS} from '../Graphql/Queries';
+import { BOOKEDUSER_APARTMENTS, GET_PROFILE, LOAD_AVAILABLE_APARTMENTS, NOTUSER_APARTMENTS} from '../Graphql/Queries';
 import {useNavigate, Link} from 'react-router-dom';
 
 
 function Profilepage() {
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //   // Check if the user is coming from the login page
-    //   const fromLoginPage = localStorage.getItem('fromLoginPage') === 'true';
+    useEffect(() => {
+      // Check if the user is coming from the login page
+      const fromaddbooking = localStorage.getItem('fromaddbooking') === 'true';
+      const fromLoginPage = localStorage.getItem('fromLoginPage') === 'true';
   
-    //   if (fromLoginPage) {
-    //     // Clear the flag
-    //     localStorage.removeItem('fromLoginPage');
+      if (fromaddbooking) {
+        // Clear the flag
+        localStorage.removeItem('fromaddbooking');
   
-    //     // Refresh the page
-    //     window.location.reload();
-    //   }
-    // }, []);
+        // Refresh the page
+        window.location.reload();
+      }
+
+      if (fromLoginPage) {
+        // Clear the flag
+        localStorage.removeItem('fromLoginPage');
+  
+        // Refresh the page
+        window.location.reload();
+      }
+
+
+    }, []);
 
     const email = localStorage.getItem("email")
     const {loading, error, data} = useQuery(GET_PROFILE, {
@@ -29,7 +40,13 @@ function Profilepage() {
         }
     })
 
-    const { loading: loadingApartments, error: errorApartments, data: dataApartments } = useQuery(LOAD_AVAILABLE_APARTMENTS);
+    const { loading: loadingApartments, error: errorApartments, data: dataApartments } = useQuery(NOTUSER_APARTMENTS,{
+      variables: {user_id: parseInt(localStorage.getItem("user_id"))}
+    });
+
+    const { loading: loadingBooked, error: errorBooked, data: dataBooked } = useQuery(BOOKEDUSER_APARTMENTS,{
+      variables: {user_id: parseInt(localStorage.getItem("user_id"))}
+    });
 
 
     if(error){
@@ -50,11 +67,11 @@ function Profilepage() {
         </p>
         </div>
 
-      {/* For Cards */}
+      {/* For Available Cards */}
       <h3 className='center-align'>Available Apartments</h3>
               <div className='container row'> 
                 {
-                  dataApartments?.available_apartments.map(apartment =>{
+                  dataApartments?.notuser_apartments.map(apartment =>{
                     return (
                       <section className='fcards col l4'>
                       <div className="row">
@@ -68,6 +85,36 @@ function Profilepage() {
                               <Link to = "/booking" onClick={() => {
                                 localStorage.setItem("apartment_id", apartment?.apartment_id)
                               }}><p>Book Now!!</p></Link>
+                            </div>
+                            <div className="card-reveal">
+                              <span className="card-title grey-text text-darken-4" >Description<i className="material-icons right">close</i></span>
+                              <p>{apartment?.apartment_features}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+              )
+            })
+          }
+        </div>
+
+
+      {/* For Booked Cards */}
+      <h3 className='center-align'>Booked Apartments</h3>
+              <div className='container row'> 
+                {
+                  dataBooked?.bookeduser_apartments.map(apartment =>{
+                    return (
+                      <section className='fcards col l4'>
+                      <div className="row">
+                        <div className="">
+                        <div className="card">
+                            <div className="card-image waves-effect waves-block waves-light">
+                              <img className="activator" src="https://media.istockphoto.com/id/1365649825/photo/stylish-micro-apartment-for-one.jpg?s=2048x2048&w=is&k=20&c=SEjWOYBNNQ3Y4w_wn6Go4wPwhZkwoH8etv4g02dWFl4="/>
+                            </div>
+                            <div className="card-content">
+                              <span className="card-title activator grey-text text-darken-4">{apartment?.apartment_number}<i class="material-icons right">Description</i></span>
                             </div>
                             <div className="card-reveal">
                               <span className="card-title grey-text text-darken-4" >Description<i className="material-icons right">close</i></span>

@@ -20,19 +20,18 @@ type_defs = gql("""
                 user_email: String!
                 user_birth_date: Datetime!
                 role: Usertype!
-                buildings: [Building]
+                apartments: [Apartment]
             }
 
             type Building{
                 building_id: Int!
-                user_id: Int!
-                num_rooms: Int!
-                building_location: String!
+                building_number: String!
             }
                 
             type Apartment{
                 apartment_id: Int!
-                building_id: Int!
+                building_number: String!
+                user_id: Int!
                 apartment_number: String!
                 apartment_size: Int!
                 apartment_features: String!
@@ -57,6 +56,8 @@ type_defs = gql("""
                 apartments: [Apartment]
                 apartment(id: Int!): Apartment
                 available_apartments: [Apartment]
+                bookeduser_apartments(user_id: Int!): [Apartment]
+                notuser_apartments(user_id: Int!): [Apartment]
                 bookings: [Booking]
                 booking(id: Int!): Booking
                 user_profile(user_email: String!): User
@@ -66,27 +67,24 @@ type_defs = gql("""
             type Mutation{
                 register(user: AddUser!): User
                 login(email: String!, user_password: String!): LoginInfo
-                addBuilding(building: AddBuilding!): Building
+                addBuilding(building_number: String!): Building
                 addApartment(apartment: AddApartment!): Apartment
                 addBooking(booking: AddBooking!): Booking
-                deleteBuilding(id: Int!): Building
+                deleteApartment(apartment_number: Int!): Apartment
                 updateBooking(id: Int!, booking: UpdateBooking!): Booking
-                updateBuilding(id: Int!, building: UpdateBuilding): Building
             }
                 
             input AddApartment{
-                building_id: Int!
+                building_number: String!
+                user_id: Int!
                 apartment_number: String!
                 apartment_size: Int!
                 apartment_features: String!
-                apartment_isbooked: Boolean!
                 apartment_type: Apartmenttype!
             }
                 
             input AddBuilding{
-                user_id: Int!
-                num_rooms: Int!
-                building_location: String!
+                building_number: String!
             }
                 
             input AddBooking{
@@ -94,11 +92,6 @@ type_defs = gql("""
                 apartment_id: Int!
                 booking_start_date: Datetime!
                 booking_end_date: Datetime!
-            }
-                
-            input UpdateBuilding{
-                user_id: Int
-                num_rooms: Int
             }
             
             input UpdateBooking{

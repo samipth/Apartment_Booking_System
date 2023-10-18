@@ -17,11 +17,12 @@ export const LOGIN_USER = gql`
 }
 `;
 
-export const ADD_BUILDING = gql`
-  mutation addBuilding($building: AddBuilding!){
-    addBuilding(building: $building){
-      user_id
-      building_location
+export const ADD_APARTMENT = gql`
+  mutation addApartment($apartment: AddApartment!) {
+    addApartment(apartment: $apartment) {
+      apartment_number
+      apartment_size
+      apartment_features
   }
 }
 `;

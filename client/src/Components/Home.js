@@ -1,6 +1,6 @@
   import {React,useEffect} from 'react'
   import {useQuery, gql} from '@apollo/client';
-  import {LOAD_AVAILABLE_APARTMENTS, LOAD_SHARABLE_APARTMENTS, LOAD_USERS} from '../Graphql/Queries';
+  import {LOAD_AVAILABLE_APARTMENTS, LOAD_SHARABLE_APARTMENTS} from '../Graphql/Queries';
   import { Link } from 'react-router-dom';
 
   function Home() { 

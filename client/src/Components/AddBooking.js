@@ -33,6 +33,7 @@ function AddBooking() {
             }
         }
     })
+    localStorage.setItem("fromaddbooking", "true")
     navigate("/profile")
   }
 

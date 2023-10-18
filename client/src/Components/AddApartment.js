@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react'
-import { ADD_BUILDING } from '../Graphql/Mutations';
+import { ADD_APARTMENT, ADD_BUILDING } from '../Graphql/Mutations';
 import { LOAD_USERS } from '../Graphql/Queries';
 
 function AddApartment() {
   const [formData, setFormData] = useState({});
-  const [addBuilding, {loading, error, data}] = useMutation(ADD_BUILDING, {
+  const [addBuilding, {loading, error, data}] = useMutation(ADD_APARTMENT, {
     refetchQueries: [
         LOAD_USERS,
         'GetAllUsers'
@@ -28,7 +28,14 @@ function AddApartment() {
     e.preventDefault()
     addBuilding({
         variables: {
-            building: formData
+            apartment: {
+              building_number: formData.building_number,
+              user_id: parseInt(localStorage.getItem("user_id")),
+              apartment_number: formData.apartment_number,
+              apartment_size:formData.apartment_size,
+              apartment_features: formData.apartment_features, 
+              apartment_type: formData.apartment_type
+            }
         }
     })
   }
@@ -53,27 +60,40 @@ function AddApartment() {
                 data && data.addBuilding &&
                 <div className='green card-panel'>New Apartment has been added</div>
         }
-      <h5>AddBuilding!!</h5>
+      <h5>AddApartment!!</h5>
       <form onSubmit={(e) => handleSubmit(e)}>
         <input 
-            type = 'number'
-            placeholder = 'UserID'
-            name = 'user_id'
-            onChange={(e) => handleChange(e)}
-            required
-            />
-
-        <input 
-            type = 'number'
-            placeholder = 'Number of Rooms'
-            name = 'num_rooms'
+            type = 'text'
+            placeholder = 'Building Number'
+            name = 'building_number'
             onChange={(e) => handleChange(e)}
             required
             />
         <input 
             type = 'text'
-            placeholder = 'Location'
-            name = 'building_location'
+            placeholder = 'Apartment Number'
+            name = 'apartment_number'
+            onChange={(e) => handleChange(e)}
+            required
+            />
+        <input 
+            type = 'number'
+            placeholder = 'Apartment Size (BHK)'
+            name = 'apartment_size'
+            onChange={(e) => handleChange(e)}
+            required
+            />
+        <input 
+            type = 'text'
+            placeholder = 'Apartment features'
+            name = 'apartment_features'
+            onChange={(e) => handleChange(e)}
+            required
+            />
+        <input 
+            type = 'text'
+            placeholder = 'Apartment Type'
+            name = 'apartment_type'
             onChange={(e) => handleChange(e)}
             required
             />

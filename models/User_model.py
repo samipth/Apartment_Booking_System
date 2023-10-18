@@ -16,7 +16,7 @@ class User(Base):
     created_at = Column(Date, default = datetime.now)
     role = Column(Enum("Provider", "Client", name = "role_enum", create_type = False), nullable = False)
 
-    buildings = relationship("Building")
+    apartments = relationship("Apartment")
 
     # Things = relationship("Thing", back_populates = "People", cascade="delete, merge, save-update")
 

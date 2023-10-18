@@ -20,8 +20,8 @@ export const GET_PROFILE = gql`
             user_phone
             user_email
             role
-            buildings{
-                building_id
+            apartments{
+                apartment_number
             }
         }
 }
@@ -56,4 +56,26 @@ export const LOAD_AVAILABLE_APARTMENTS = gql`
             apartment_features
     }
 }
-`
+`;
+
+export const NOTUSER_APARTMENTS = gql`
+    query notuser_apartments($user_id: Int!){
+        notuser_apartments(user_id: $user_id){
+            apartment_id
+            apartment_number
+            apartment_size
+            apartment_features
+    }
+}
+`;
+
+export const BOOKEDUSER_APARTMENTS = gql`
+    query bookeduser_apartments($user_id: Int!){
+        bookeduser_apartments(user_id: $user_id){
+            apartment_id
+            apartment_number
+            apartment_size
+            apartment_features
+    }
+}
+`;
