@@ -15,13 +15,12 @@ class Booking(Base):
 
     # Things = relationship("Thing", back_populates = "People", cascade="delete, merge, save-update")
 
-    def __init__(self, id, client_id, apartment_id, start_date, end_date):
-        self.booking_id = id
-        self.client_id = client_id
+    def __init__(self, user_id, apartment_id, start_date, end_date):
+        self.user_id = user_id
         self.apartment_id = apartment_id
         self.booking_start_date = start_date
         self.booking_end_date = end_date
 
     def __repr__(self):
-        return f"(Booking_id: {self.booking_id}, Client_id: {self.client_id}, Apartment_id: {self.apartment_id}"
+        return f"(Booking_id: {self.booking_id}, Client_id: {self.user_id}, Apartment_id: {self.apartment_id}"
 

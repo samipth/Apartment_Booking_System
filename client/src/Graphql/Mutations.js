@@ -25,3 +25,14 @@ export const ADD_BUILDING = gql`
   }
 }
 `;
+
+export const ADD_BOOKING = gql`
+  mutation addBooking($booking: AddBooking!){
+    addBooking(booking: $booking){
+      user_id
+      apartment_id
+      created_at
+  }
+}
+`;
+

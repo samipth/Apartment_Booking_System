@@ -1,6 +1,6 @@
   import {React,useEffect} from 'react'
   import {useQuery, gql} from '@apollo/client';
-  import {LOAD_APARTMENTS, LOAD_USERS} from '../Graphql/Queries';
+  import {LOAD_AVAILABLE_APARTMENTS, LOAD_SHARABLE_APARTMENTS, LOAD_USERS} from '../Graphql/Queries';
   import { Link } from 'react-router-dom';
 
   function Home() { 
@@ -18,7 +18,9 @@
       }
     }, []);
 
-    const {loading, error, data} = useQuery(LOAD_APARTMENTS)
+    const {loading, error, data} = useQuery(LOAD_AVAILABLE_APARTMENTS)
+    
+    const { loading: loadingApartments, error: errorApartments, data: dataApartments } = useQuery(LOAD_SHARABLE_APARTMENTS);
 
     if(error){
       console.log(error.message)
@@ -51,11 +53,41 @@
         </div>
         </section>
 
-        {/* For Cards */}
+        {/* For Cards for Apartments*/}
         <h3 className='center-align'>Available Apartments</h3>
         <div className='container row'> 
           {
-            data?.apartments.map(apartment =>{
+            data?.available_apartments.map(apartment =>{
+              return (
+                      <section className='fcards col l4'>
+                      <div className="row">
+                        <div className="">
+                        <div className="card">
+                            <div className="card-image waves-effect waves-block waves-light">
+                              <img className="activator" src="https://media.istockphoto.com/id/1365649825/photo/stylish-micro-apartment-for-one.jpg?s=2048x2048&w=is&k=20&c=SEjWOYBNNQ3Y4w_wn6Go4wPwhZkwoH8etv4g02dWFl4="/>
+                            </div>
+                            <div className="card-content">
+                              <span className="card-title activator grey-text text-darken-4">{apartment?.apartment_number}<i class="material-icons right">Description</i></span>
+                              <Link to = "/login"><p>Book Now!!</p></Link>
+                            </div>
+                            <div className="card-reveal">
+                              <span className="card-title grey-text text-darken-4" >Description<i className="material-icons right">close</i></span>
+                              <p>{apartment?.apartment_features}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+              )
+            })
+          }
+        </div>
+
+        {/* For Cards for sharable Apartments */}
+        <h3 className='center-align'>Sharable Apartments</h3>
+        <div className='container row'> 
+          {
+            dataApartments?.sharable_apartments.map(apartment =>{
               return (
                       <section className='fcards col l4'>
                       <div className="row">

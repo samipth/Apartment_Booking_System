@@ -14,11 +14,15 @@ export const LOAD_USERS = gql`
 export const GET_PROFILE = gql`
     query user_profile($user_email: String!){
         user_profile(user_email: $user_email){
+            user_id
             user_name
             user_birth_date
             user_phone
             user_email
             role
+            buildings{
+                building_id
+            }
         }
 }
 `;
@@ -26,9 +30,30 @@ export const GET_PROFILE = gql`
 export const LOAD_APARTMENTS = gql`
     query apartments{
         apartments{
+            apartment_id
             apartment_number
             apartment_size
             apartment_features
         }
 }
 `;
+
+export const LOAD_SHARABLE_APARTMENTS = gql`
+   query sharable_apartments{
+        sharable_apartments{
+   	        apartment_number
+            apartment_features
+            apartment_size 
+    }
+}
+`; 
+
+export const LOAD_AVAILABLE_APARTMENTS = gql`
+    query available_apartments{
+        available_apartments{
+            apartment_number
+            apartment_size
+            apartment_features
+    }
+}
+`

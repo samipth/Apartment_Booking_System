@@ -1,11 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {React, useEffect} from 'react'
 import { LOGIN_USER } from '../Graphql/Mutations';
-import { GET_PROFILE, LOAD_AVAILABLE_APARTMENTS} from '../Graphql/Queries';
+import { GET_PROFILE } from '../Graphql/Queries';
 import {useNavigate, Link} from 'react-router-dom';
 
-
-function Profilepage() {
+function ListedApartment() {
     const navigate = useNavigate();
 
     // useEffect(() => {
@@ -23,14 +22,8 @@ function Profilepage() {
 
     const email = localStorage.getItem("email")
     const {loading, error, data} = useQuery(GET_PROFILE, {
-        variables : {user_email: email },
-        onCompleted(data){
-          localStorage.setItem("user_id", data.user_profile.user_id)
-        }
+        variables : {user_email: email }
     })
-
-    const { loading: loadingApartments, error: errorApartments, data: dataApartments } = useQuery(LOAD_AVAILABLE_APARTMENTS);
-
 
     if(error){
         console.log(error)
@@ -50,12 +43,12 @@ function Profilepage() {
         </p>
         </div>
 
-      {/* For Cards */}
-      <h3 className='center-align'>Available Apartments</h3>
-              <div className='container row'> 
-                {
-                  dataApartments?.available_apartments.map(apartment =>{
-                    return (
+        {/* For Cards */}
+        <h3 className='center-align'>Listed Apartments</h3>
+        <div className='container row' style={{paddingTop: "20px"}}> 
+          {
+            data?.user_profile?.buildings.map(building =>{
+              return (
                       <section className='fcards col l4'>
                       <div className="row">
                         <div className="">
@@ -64,19 +57,17 @@ function Profilepage() {
                               <img className="activator" src="https://media.istockphoto.com/id/1365649825/photo/stylish-micro-apartment-for-one.jpg?s=2048x2048&w=is&k=20&c=SEjWOYBNNQ3Y4w_wn6Go4wPwhZkwoH8etv4g02dWFl4="/>
                             </div>
                             <div className="card-content">
-                              <span className="card-title activator grey-text text-darken-4">{apartment?.apartment_number}<i class="material-icons right">Description</i></span>
-                              <Link to = "/booking" onClick={() => {
-                                localStorage.setItem("apartment_id", apartment?.apartment_id)
-                              }}><p>Book Now!!</p></Link>
+                              <span className="card-title activator grey-text text-darken-4">{building?.building_id}<i class="material-icons right">Description</i></span>
+                              <Link to = "/login"><p>Book Now!!</p></Link>
                             </div>
                             <div className="card-reveal">
                               <span className="card-title grey-text text-darken-4" >Description<i className="material-icons right">close</i></span>
-                              <p>{apartment?.apartment_features}</p>
+                              <p>Hello there</p>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </section>
+                    </div>
+                  </section>
               )
             })
           }
@@ -86,4 +77,4 @@ function Profilepage() {
   )
 }
 
-export default Profilepage;
+export default ListedApartment

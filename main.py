@@ -5,6 +5,7 @@ from models.Apartment_model import Apartment
 from models.Booking_model import Booking
 from ariadne import ObjectType, QueryType, ScalarType, make_executable_schema
 from ariadne.asgi import GraphQL
+from sqlalchemy import or_
 from graphql.type import GraphQLResolveInfo
 from ariadne.asgi.handlers import GraphQLHTTPHandler
 from ariadne.exceptions import HttpBadRequestError
@@ -70,6 +71,12 @@ def resolve_booking(*_, id):
     provider = session.query(Booking).filter(Booking.booking_id == id).first()
     return provider
 
+@query.field("sharable_apartments")
+def resolve_apartment(*_):
+    apartment = session.query(Apartment).filter(Apartment.apartment_type == 'Sharable')
+    return apartment
+
+
 @mutate.field("register")
 def resolve_register(*_, user):
     email_duplication = session.query(User).where(User.user_email == user["user_email"]).first()
@@ -123,9 +130,20 @@ def resolve_deleteBuilding(*_, id):
     session.commit()
     return deleted_building
 
+@query.field("available_apartments")
+def resolve_available_apartments(*_):
+    available_apartments = session.query(Apartment).filter(or_(Apartment.apartment_isbooked == False, Apartment.apartment_type =='Sharable'))
+    return available_apartments
+
 @mutate.field("addBooking")
 def resolve_addBooking(*_, booking):
-    new_booking = Booking(booking['client_id'], booking["apartment_id"], booking["start_date"], booking["end_date"], booking["issued_date"])
+    required_apartment = session.query(Apartment).filter(Apartment.apartment_id == booking["apartment_id"])
+    if required_apartment.first().apartment_isbooked == False or required_apartment.first().apartment_type == "Sharable":
+        required_apartment.update({Apartment.apartment_isbooked: True})
+    else:
+        raise HttpBadRequestError("Room is already booked and it is not sharable.")
+    
+    new_booking = Booking(booking['user_id'], booking["apartment_id"], booking["booking_start_date"], booking["booking_end_date"])
     session.add(new_booking)
     session.commit()
     return new_booking
@@ -148,7 +166,8 @@ def resolve_updateBuilding(*_, id, building):
 
 # Authentication
 def protect_route(resolver, obj, info: GraphQLResolveInfo, **args):
-    non_routed_mutations = ["IntrospectionQuery","register", "login", "GetAllUsers", "apartments" ]
+    non_routed_mutations = ["IntrospectionQuery","register", "login", "GetAllUsers", "apartments", "sharable_apartments",
+                            "available_apartments" ]
     mutation_name = info.operation.name.value
     if mutation_name in non_routed_mutations:
         return resolver(obj, info, **args)

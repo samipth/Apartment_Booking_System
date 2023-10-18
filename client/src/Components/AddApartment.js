@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { ADD_BUILDING } from '../Graphql/Mutations';
 import { LOAD_USERS } from '../Graphql/Queries';
 
-function AddBuilding() {
+function AddApartment() {
   const [formData, setFormData] = useState({});
   const [addBuilding, {loading, error, data}] = useMutation(ADD_BUILDING, {
     refetchQueries: [
@@ -51,7 +51,7 @@ function AddBuilding() {
         }
         {
                 data && data.addBuilding &&
-                <div className='green card-panel'>New Building has been added</div>
+                <div className='green card-panel'>New Apartment has been added</div>
         }
       <h5>AddBuilding!!</h5>
       <form onSubmit={(e) => handleSubmit(e)}>
@@ -83,4 +83,4 @@ function AddBuilding() {
   )
 }
 
-export default AddBuilding;
+export default AddApartment;

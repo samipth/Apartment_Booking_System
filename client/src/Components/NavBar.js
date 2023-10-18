@@ -17,10 +17,12 @@ function NavBar() {
               {
                 token ?
                 <>
-                  <li><Link to="/addbuildings">Add Building</Link></li>
+                  <li><Link to="/addapartments">Add Apartments</Link></li>
                   <li><Link to="/profile">Profile</Link></li>
+                  <li><Link to= "/listed">Listed Apartments</Link></li>
                   <li><button className='red btn' onClick={()=>{
                     localStorage.removeItem("token")
+                    localStorage.removeItem("email")
                     navigate("/login")
                   }}>Logout</button></li>
                 </>:
