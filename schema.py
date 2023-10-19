@@ -46,6 +46,7 @@ type_defs = gql("""
                 booking_start_date: Datetime!
                 booking_end_date: Datetime!
                 created_at: Datetime!
+                users: [User]
             }
                 
             type Query{
@@ -58,6 +59,7 @@ type_defs = gql("""
                 available_apartments: [Apartment]
                 bookeduser_apartments(user_id: Int!): [Apartment]
                 notuser_apartments(user_id: Int!): [Apartment]
+                bookedapartment_details: [Apartment]
                 bookings: [Booking]
                 booking(id: Int!): Booking
                 user_profile(user_email: String!): User
@@ -70,7 +72,7 @@ type_defs = gql("""
                 addBuilding(building_number: String!): Building
                 addApartment(apartment: AddApartment!): Apartment
                 addBooking(booking: AddBooking!): Booking
-                deleteApartment(apartment_number: Int!): Apartment
+                deleteApartment(apartment_number: String!): Apartment
                 updateBooking(id: Int!, booking: UpdateBooking!): Booking
             }
                 

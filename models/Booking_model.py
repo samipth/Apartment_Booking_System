@@ -13,7 +13,7 @@ class Booking(Base):
     booking_end_date = Column("Booking_end_date", Date) 
     created_at = Column(Date, default = datetime.now)
 
-    # Things = relationship("Thing", back_populates = "People", cascade="delete, merge, save-update")
+    users = relationship("User")
 
     def __init__(self, user_id, apartment_id, start_date, end_date):
         self.user_id = user_id

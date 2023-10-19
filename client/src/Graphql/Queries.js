@@ -34,6 +34,7 @@ export const LOAD_APARTMENTS = gql`
             apartment_number
             apartment_size
             apartment_features
+            users
         }
 }
 `;
@@ -50,7 +51,7 @@ export const LOAD_SHARABLE_APARTMENTS = gql`
 
 export const LOAD_AVAILABLE_APARTMENTS = gql`
     query available_apartments{
-        available_apartments{
+        user: available_apartments{
             apartment_number
             apartment_size
             apartment_features
@@ -60,7 +61,7 @@ export const LOAD_AVAILABLE_APARTMENTS = gql`
 
 export const NOTUSER_APARTMENTS = gql`
     query notuser_apartments($user_id: Int!){
-        notuser_apartments(user_id: $user_id){
+        user: notuser_apartments(user_id: $user_id){
             apartment_id
             apartment_number
             apartment_size
@@ -76,6 +77,16 @@ export const BOOKEDUSER_APARTMENTS = gql`
             apartment_number
             apartment_size
             apartment_features
+    }
+}
+`;
+
+export const BOOKED_APARTMENTS = gql`
+    query bookedapartment_details{
+        bookedapartment_details{
+            apartment_id
+            apartment_number
+            apartment_size
     }
 }
 `;

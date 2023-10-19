@@ -16,6 +16,7 @@ from Middleware.JWTManager import JWTManager
 from hash import hashed_password
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+from datetime import date
 
 query = QueryType()
 user = QueryType()
@@ -144,6 +145,10 @@ def resolve_addApartment(*_, apartment):
 @mutate.field("deleteApartment")
 def resolve_deleteBuilding(*_, apartment_number):
     deleted_apartment = session.query(Apartment).filter(Apartment.apartment_number == apartment_number).first()
+    check = session.query(Booking).filter(Booking.apartment_id == deleted_apartment.apartment_id)
+    if check:
+        raise HttpBadRequestError("The apartment is booked by a client, so can't remove it")
+    
     session.delete(deleted_apartment)
     session.commit()
     return deleted_apartment
@@ -153,6 +158,13 @@ def resolve_available_apartments(*_):
     available_apartments = session.query(Apartment).filter(or_(Apartment.apartment_isbooked == False, Apartment.apartment_type =='Sharable'))
     return available_apartments
 
+@query.field("bookedapartment_details")
+def resolve_bookeddapartment_details(*_):
+    booked_apartment_ids = [booking.apartment_id for booking in session.query(Booking)]
+    # Query apartments that are not booked by the user
+    apartments = session.query(Apartment).filter(Apartment.apartment_id.in_(booked_apartment_ids)).all()
+    return apartments
+
 @mutate.field("addBooking")
 def resolve_addBooking(*_, booking):
     required_apartment = session.query(Apartment).filter(Apartment.apartment_id == booking["apartment_id"])
@@ -160,6 +172,9 @@ def resolve_addBooking(*_, booking):
         required_apartment.update({Apartment.apartment_isbooked: True})
     else:
         raise HttpBadRequestError("Room is already booked and it is not sharable.")
+    
+    # if (booking["booking_start_date"] < booking['booking_end_date']) or (booking["booking_start_date"] < date.today()):
+    #     raise HttpBadRequestError("Please select valid start date")
     
     new_booking = Booking(booking['user_id'], booking["apartment_id"], booking["booking_start_date"], booking["booking_end_date"])
     session.add(new_booking)

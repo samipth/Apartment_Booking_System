@@ -1,6 +1,10 @@
 .my-container{
     max-width: 400px !important;
   }
+
+  .nav-wrapper{
+    background-color:  #6a747c ;
+  }
  
   input:focus {
     border-bottom: 1px solid #42a5f5 !important;
@@ -28,10 +32,18 @@
 
   .fslider{
     padding-bottom: 40px;
-    padding-top: 20px;
+    padding-top: 10px;
   }
 
   .center-align{
     padding-bottom: 20px;
   }
 
+  .description-title {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .description-text {
+    color: #666;
+  }

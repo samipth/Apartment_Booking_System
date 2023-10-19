@@ -8,7 +8,7 @@ class Apartment(Base):
     apartment_id = Column("Apartment_id", Integer, primary_key = True)
     building_number = Column("Building_number", String, ForeignKey("Buildings.Building_number"), nullable=False)
     user_id = Column("User_id", Integer, ForeignKey("Users.User_id"), nullable=False)
-    apartment_number = Column("Apartment_number", String, nullable=False)
+    apartment_number = Column("Apartment_number", String, nullable=False, unique=True)
     apartment_size = Column("Apartment_size(BHK)", Integer, nullable=False)
     apartment_features = Column("Apartment_features", String)
     apartment_isbooked = Column("Booking_Status", Boolean, nullable = False, default = False)

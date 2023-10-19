@@ -37,3 +37,11 @@ export const ADD_BOOKING = gql`
 }
 `;
 
+export const DELETE_APARTMENT = gql`
+  mutation deleteApartment($apartment_number: String!){
+    deleteApartment(apartment_number: $apartment_number){
+      apartment_number
+    }
+  }
+`
+

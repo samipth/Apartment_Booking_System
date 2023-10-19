@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {React, useEffect} from 'react'
 import { LOGIN_USER } from '../Graphql/Mutations';
-import { BOOKEDUSER_APARTMENTS, GET_PROFILE, LOAD_AVAILABLE_APARTMENTS, NOTUSER_APARTMENTS} from '../Graphql/Queries';
+import { BOOKEDUSER_APARTMENTS, GET_PROFILE, NOTUSER_APARTMENTS} from '../Graphql/Queries';
 import {useNavigate, Link} from 'react-router-dom';
 
 
@@ -71,7 +71,7 @@ function Profilepage() {
       <h3 className='center-align'>Available Apartments</h3>
               <div className='container row'> 
                 {
-                  dataApartments?.notuser_apartments.map(apartment =>{
+                  dataApartments?.user.map(apartment =>{
                     return (
                       <section className='fcards col l4'>
                       <div className="row">

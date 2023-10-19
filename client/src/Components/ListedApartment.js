@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {React, useEffect} from 'react'
-import { LOGIN_USER } from '../Graphql/Mutations';
+import { DELETE_APARTMENT, LOGIN_USER } from '../Graphql/Mutations';
 import { GET_PROFILE } from '../Graphql/Queries';
 import {useNavigate, Link} from 'react-router-dom';
 
@@ -24,6 +24,15 @@ function ListedApartment() {
     const {loading, error, data} = useQuery(GET_PROFILE, {
         variables : {user_email: email }
     })
+    const [deleteApartment, {loading: deleteloading, error:errorloading, data:dataloading}] = useMutation(DELETE_APARTMENT)
+
+    const deleteapartment = () => {
+      deleteApartment({
+        variables: {
+          apartment_number: localStorage.getItem("apartment_number")
+        }
+      })
+    }
 
     if(error){
         console.log(error)
@@ -58,7 +67,10 @@ function ListedApartment() {
                             </div>
                             <div className="card-content">
                               <span className="card-title activator grey-text text-darken-4">{apartment?.apartment_number}<i class="material-icons right">Description</i></span>
-                              <Link to = "/login"><p>Book Now!!</p></Link>
+                              <Link to = "/listed" onClick={() => {
+                                localStorage.setItem("apartment_number", apartment?.apartment_number)
+                                deleteapartment()
+                              }}><p>Delete</p></Link>
                             </div>
                             <div className="card-reveal">
                               <span className="card-title grey-text text-darken-4" >Description<i className="material-icons right">close</i></span>

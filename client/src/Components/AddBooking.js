@@ -59,6 +59,7 @@ function AddBooking() {
         }
       <h5>AddBooking!!</h5>
       <form onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="booking_start_date">Start Date</label>
         <input 
             type = 'date'
             placeholder = 'Start Date'
@@ -66,7 +67,7 @@ function AddBooking() {
             onChange={(e) => handleChange(e)}
             required
             />
-
+        <label htmlFor="booking_end_date">End Date</label>
         <input 
             type = 'date'
             placeholder = 'End Date'
